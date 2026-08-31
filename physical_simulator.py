@@ -3,6 +3,7 @@ from datetime import datetime
 
 queue = 0
 counter_open = 1
+counter_open = 2
 
 while True:
     # Random students coming (like real IoT sensor data)
