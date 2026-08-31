@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Canteen Digital Twin</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{font-family:Arial; padding:20px; background:#f5f5f5}
+.card{background:white; padding:20px; border-radius:10px; margin:10px; box-shadow:0 2px 5px #ccc}
+.critical{color:red; font-weight:bold} .normal{color:green}</style>
+</head>
+<body>
+<h1>🏫 College Canteen - DIGITAL TWIN (Live)</h1>
+<div style="display:flex">
+  <div class="card"><h3>Live Queue</h3><h1 id="queue">0</h1></div>
+  <div class="card"><h3>Predicted Wait</h3><h1 id="wait">0 mins</h1></div>
+  <div class="card"><h3>Status</h3><h2 id="status">NORMAL</h2><p id="action"></p></div>
+</div>
+<div class="card">
+  <h3>What-If Simulation (Twin Advantage)</h3>
+  <p>If 1 counter: <span id="w1"></span></p>
+  <p>If 2 counters: <span id="w2" style="color:green; font-weight:bold"></span></p>
+</div>
+<div class="card"><canvas id="chart"></canvas></div>
+
+<script>
+let queueData=[], timeData=[];
+let chart = new Chart(document.getElementById('chart'), {
+  type:'line', data:{labels:timeData, datasets:[{label:'Queue Length', data:queueData, borderColor:'blue'}]}
+});
+
+async function update(){
+  let res = await fetch('/twin-data');
+  let data = await res.json();
+  document.getElementById('queue').innerText = data.live_queue;
+  document.getElementById('wait').innerText = data.predicted_wait_mins + " mins";
+  document.getElementById('status').innerText = data.status;
+  document.getElementById('action').innerText = data.action_recommended;
+  document.getElementById('w1').innerText = data.what_if_analysis.if_1_counter;
+  document.getElementById('w2').innerText = data.what_if_analysis.if_2_counters;
+  
+  queueData.push(data.live_queue); timeData.push(data.timestamp);
+  if(queueData.length>15){queueData.shift(); timeData.shift();}
+  chart.update();
+}
+setInterval(update, 2000);
+</script>
+</body>
+</html>

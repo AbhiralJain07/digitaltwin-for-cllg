@@ -1,0 +1,1 @@
+{"live_queue": 552, "predicted_wait_mins": 276.0, "status": "CRITICAL RUSH", "action_recommended": "Open 2nd counter immediately", "what_if_analysis": {"if_1_counter": "276.0 mins wait", "if_2_counters": "138.0 mins wait"}, "timestamp": "11:07:02"}
